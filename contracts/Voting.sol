@@ -218,10 +218,6 @@ contract Voting is Ownable {
             return false;
         }
 
-        if (!vote.requireExecutor) {
-            return false;
-        }
-
         if (
             vote.yesAmount.mul(100).div(
                 vote.yesAmount.add(vote.noAmount)
@@ -232,10 +228,17 @@ contract Voting is Ownable {
         return true;
     }
 
+    /**
+     * @notice Execute the vote
+     * @param _voteId vote id
+     */
     function executeVote(uint256 _voteId) external voteExist(_voteId) {
         if (_canExecute(_voteId)) {
-            _execution.trigger(_voteId);
-            votes[_voteId].executed = true;
+            Vote storage vote = votes[_voteId];
+            if (vote.requireExecutor) {
+                _execution.trigger(_voteId);
+            }
+            vote.executed = true;
         }
     }
 

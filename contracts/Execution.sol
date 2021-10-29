@@ -53,8 +53,8 @@ contract Execution is Ownable {
         uint256 indexed voteId
     );
 
-    constructor(address _eth) {
-        ETH = _eth;
+    constructor() {
+        ETH = address(0);
     }
 
     function setVotingAddress(address _addr) external onlyOwner {

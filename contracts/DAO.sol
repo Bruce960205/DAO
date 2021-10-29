@@ -24,12 +24,20 @@ contract DAO is Ownable {
     // Minimum token holding amount
     uint256 public minimumTokenHolds;
 
-    constructor(string memory _daoName) {
+    constructor(
+        string memory _daoName,
+        uint256 _minimumDuration,
+        uint256 _minimumSupport,
+        uint256 _minimumTokenHolds,
+        ERC20 _voteToken
+    ) {
+
         daoName = _daoName;
 
-        minimumDuration = 60; // 1 minute
-        minimumSupport = 50; // 50 %
-        minimumTokenHolds = 1;
+        minimumDuration = _minimumDuration;
+        minimumSupport = _minimumSupport;
+        minimumTokenHolds = _minimumTokenHolds;
+        voteToken = _voteToken;
     }
 
     function setDAOName(string memory _daoName) external onlyOwner {

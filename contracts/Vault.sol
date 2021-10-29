@@ -32,8 +32,8 @@ contract Vault is Ownable, ReentrancyGuard {
         uint256 amount
     );
 
-    constructor(address _eth) {
-        ETH = _eth;
+    constructor() {
+        ETH = address(0);
     }
 
     function setExecutionAddress(address _addr) external onlyOwner {

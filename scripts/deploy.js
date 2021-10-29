@@ -13,19 +13,25 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  const eth = "0x2ef73f60F33b167dC018C6B1DCC957F4e4c7e936";
-
   // We get the contract to deploy
   const DAO = await hre.ethers.getContractFactory("DAO");
   const Vault = await hre.ethers.getContractFactory("Vault");
   const Execution = await hre.ethers.getContractFactory("Execution");
   const Voting = await hre.ethers.getContractFactory("Voting");
 
-  const dao = await DAO.deploy("Our new DAO");
+  const voteToken = "0x8f68C0cFBBD4c0B0e878EEd7E0D53e6aCD4232A1"; // DAO token in BSC testnet
+
+  const dao = await DAO.deploy(
+    "Our new DAO", // DAO name
+    60, // Minimum Duration
+    50, // Minimum Support Percentage
+    1, // Minimum Token Hold
+    voteToken
+  );
   await dao.deployed();
-  const vault = await Vault.deploy(eth);
+  const vault = await Vault.deploy();
   await vault.deployed();
-  const execution = await Execution.deploy(eth);
+  const execution = await Execution.deploy();
   await execution.deployed();
   const voting = await Voting.deploy(dao.address);
   await voting.deployed();
@@ -41,24 +47,21 @@ async function main() {
   console.log("Execution deployed to:", execution.address);
   console.log("Voting deployed to:", voting.address);
 
-  const voteToken = "0x8f68C0cFBBD4c0B0e878EEd7E0D53e6aCD4232A1"; // DAO token
-  dao.setVoteToken(voteToken);
-
   await hre.run("verify:verify", {
     address: dao.address,
-    constructorArguments: ["Our new DAO"],
+    constructorArguments: ["Our new DAO", 60, 50, 1, voteToken],
   });
   console.log("DAO verified");
 
   await hre.run("verify:verify", {
     address: vault.address,
-    constructorArguments: [eth],
+    constructorArguments: [],
   });
   console.log("Vault verified");
 
   await hre.run("verify:verify", {
     address: execution.address,
-    constructorArguments: [eth],
+    constructorArguments: [],
   });
   console.log("Execution verified");
 
