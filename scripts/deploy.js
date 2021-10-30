@@ -40,6 +40,7 @@ async function main() {
   await execution.setVotingAddress(voting.address);
 
   await voting.setExecutionAddress(execution.address);
+  await vault.setExecutionAddress(execution.address);
 
   console.log("Conguratulations!");
   console.log("DAO deployed to:", dao.address);

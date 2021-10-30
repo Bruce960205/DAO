@@ -65,8 +65,7 @@ contract Vault is Ownable, ReentrancyGuard {
         require(_amount > 0, "Over zero");
 
         if (address(_token) == ETH) {
-            (bool sent,) = _to.call{value: _amount}("");
-            require(sent, "Reverted ETH transfer");
+            require(payable(_to).send(_amount), "Reverted ETH transfer");
         } else {
             _token.safeTransfer(_to, _amount);
         }

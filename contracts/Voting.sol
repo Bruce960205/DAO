@@ -129,13 +129,13 @@ contract Voting is Ownable {
      */
     function forward(
         uint256 _duration,
-        uint256[] memory  _kind,
+        uint256[] memory _kind,
         address[] memory _recipient,
         address[] memory _token,
         uint256[] memory _amount
     ) external onlyHolder {
         require(_duration >= minimumDuration, "At least larger than minimum duration");
-        require(_kind.length > MAX_ACTION_COUNT, "Overflow maximum action count");
+        require(_kind.length < MAX_ACTION_COUNT, "Overflow maximum action count");
         require(
             _kind.length == _recipient.length &&
             _kind.length == _token.length &&
@@ -155,7 +155,7 @@ contract Voting is Ownable {
                 _amount[i]
             );
         }
-        
+
         Vote storage vote = votes[currentVoteId];
 
         emit AddVote(
@@ -233,13 +233,13 @@ contract Voting is Ownable {
      * @param _voteId vote id
      */
     function executeVote(uint256 _voteId) external voteExist(_voteId) {
-        if (_canExecute(_voteId)) {
-            Vote storage vote = votes[_voteId];
-            if (vote.requireExecutor) {
-                _execution.trigger(_voteId);
-            }
-            vote.executed = true;
+        require(_canExecute(_voteId), "Can not execute");
+        Vote storage vote = votes[_voteId];
+        if (vote.requireExecutor) {
+            _execution.trigger(_voteId);
         }
+        vote.executed = true;
+
     }
 
     /**
